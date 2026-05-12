@@ -5,8 +5,12 @@
 #include "solarsystem.h"
 #include "utils.h"
 
+float sunPulse = 0.0f;
+
 int selectedPlanet = 0;
 float planetPos[8][3];
+
+float cameraDistance = 30.0f;
 
 // ---------------- PLANET SIZE CONTROL ----------------
 float planetSize[] = {
@@ -110,6 +114,10 @@ void drawStars()
 void drawSkybox()
 {
     glPushMatrix();
+
+    // 🔥 Skybox must not move with camera
+    glTranslatef(cameraX, cameraY, cameraZ);
+
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 
@@ -119,7 +127,10 @@ void drawSkybox()
     GLUquadric* q = gluNewQuadric();
     gluQuadricTexture(q, GL_TRUE);
 
-    gluSphere(q, 200, 50, 50);
+    // 🔥 Flip normals (inside view)
+    gluQuadricOrientation(q, GLU_INSIDE);
+
+    gluSphere(q, 200, 60, 60);
 
     gluDeleteQuadric(q);
 
@@ -135,24 +146,32 @@ void setupLighting()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
+    // ---------------- SUN POSITION ----------------
     GLfloat lightPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    GLfloat ambient[] = { 0.15f, 0.15f, 0.15f, 1.0f };
+
+    // ---------------- REALISTIC SPACE AMBIENT ----------------
+    GLfloat ambient[] = { 0.25f, 0.22f, 0.18f, 1.0f };
+    // ---------------- WARM SUNLIGHT (YELLOW-ORANGE) ----------------
     GLfloat diffuse[] = { 1.0f, 0.95f, 0.8f, 1.0f };
-    GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    // ---------------- STRONG SPECULAR HIGHLIGHT ----------------
+    GLfloat specular[] = { 1.0f, 1.0f, 0.9f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 
+    // ---------------- LIGHT ATTENUATION (IMPORTANT FOR REALISM) ----------------
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.02);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.01);     // 🔥 reduced
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.001); // 🔥 soft falloff
 
+    // ---------------- MATERIAL RESPONSE ----------------
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-    glShadeModel(GL_SMOOTH);   // 🌟 IMPORTANT (smooth lighting)
+    // ---------------- SMOOTH LIGHTING ----------------
+    glShadeModel(GL_SMOOTH);
 }
 // ---------------- SPHERE ----------------
 void drawSphere(GLuint tex, float r)
@@ -206,17 +225,50 @@ void drawSaturnRing(float innerRadius, float outerRadius)
 void drawSun()
 {
     glPushMatrix();
+
+    // ---------------- PULSE ----------------
+    float pulse = 1.0f + 0.05f * sin(sunPulse);
+
+    // ---------------- LIGHT SOURCE ----------------
+    GLfloat lightPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+    // ---------------- ENABLE BLENDING FOR GLOW ----------------
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    // ---------------- OUTER GLOW ----------------
     glDisable(GL_LIGHTING);
+    for (int i = 0; i < 6; i++)
+    {
+        float scale = (3.0f + i * 0.6f) * pulse;
+        float alpha = 0.15f / (i + 1);
 
-    glDisable(GL_LIGHTING);
-    glColor3f(1, 0.6, 0.2);
+        glColor4f(1.0f, 0.6f, 0.1f, alpha);
+        glutSolidSphere(scale, 40, 40);
+    }
 
-    glColor3f(1, 0.3, 0.2);
-    glutSolidSphere(2.5, 50, 50);
-
-    drawText(0, 3.5, 0, "Sun");
-
+    // ---------------- SUN CORE (TEXTURED) ----------------
     glEnable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, sunTex);
+
+    GLfloat emission[] = { 1.0f, 0.8f, 0.2f, 1.0f };
+    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glutSolidSphere(2.5f * pulse, 60, 60);
+
+    GLfloat noEmission[] = { 0,0,0,1 };
+    glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
+
+    glDisable(GL_TEXTURE_2D);
+
+    // ---------------- LABEL ----------------
+    drawText(0, 4.0, 0, "Sun");
+
     glPopMatrix();
 }
 
@@ -340,6 +392,8 @@ void updateSolarSystem()
         moonOrbit += 2;
         ufoAngle += 0.02;
 
+        sunPulse += 0.05f;
+
         rocketX += 0.05;
         rocketZ -= 0.03;
 
@@ -353,39 +407,61 @@ void updateSolarSystem()
 // ---------------- DRAW SYSTEM ----------------
 void drawSolarSystem()
 {
+    // ---------------- SKY & BACKGROUND ----------------
     drawSkybox();
     drawStars();
 
-    drawSun();
+    glEnable(GL_NORMALIZE);
 
-    drawPlanet(mercuryTex, mercuryOrbit, mercuryRotate, 5, planetSize[0], mercuryTilt, "Mercury",0);
-    drawPlanet(venusTex, venusOrbit, venusRotate, 7, planetSize[1], venusTilt, "Venus",1);
+    // ---------------- PLANETS (UNCHANGED) ----------------
+    drawPlanet(mercuryTex, mercuryOrbit, mercuryRotate, 5, planetSize[0], mercuryTilt, "Mercury", 0);
+    drawPlanet(venusTex, venusOrbit, venusRotate, 7, planetSize[1], venusTilt, "Venus", 1);
 
     drawEarth();
 
-    drawPlanet(marsTex, marsOrbit, marsRotate, 14, planetSize[3], marsTilt, "Mars",2);
-    drawPlanet(jupiterTex, jupiterOrbit, jupiterRotate, 18, planetSize[4], jupiterTilt, "Jupiter",3);
+    drawPlanet(marsTex, marsOrbit, marsRotate, 14, planetSize[3], marsTilt, "Mars", 2);
+    drawPlanet(jupiterTex, jupiterOrbit, jupiterRotate, 18, planetSize[4], jupiterTilt, "Jupiter", 3);
+
+    // ---------------- ☀️ REALISTIC TOMATO SUN (FIXED) ----------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.0f); // keep sun at center
+
+    // Sun glow (emission)
+    GLfloat emission[] = { 1.0f, 0.35f, 0.15f, 1.0f };
+    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+
+    // Sun color (surface)
+    glColor3f(1.0f, 0.4f, 0.2f);
+
+    // Draw sun
+    glutSolidSphere(2.8, 60, 60);
+
+    // Reset emission
+    GLfloat noEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
+
+    glPopMatrix();
+
+    // ---------------- ORBITS ----------------
     drawOrbit(22);
 
     glPushMatrix();
 
-
-    // orbit movement
+    // Saturn orbit movement
     glRotatef(saturnOrbit, 0, 1, 0);
     glTranslatef(22, 0, 0);
 
-    printf("SATURN DRAWING\n");
     // ================= RING FIRST =================
     glPushMatrix();
 
-    glRotatef(25, 1, 0, 0);   // tilt ring
+    glRotatef(25, 1, 0, 0);
 
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
 
-    // draw ring
     drawSaturnRing(
         planetSize[5] + 0.4f,
         planetSize[5] + 1.5f
@@ -397,20 +473,23 @@ void drawSolarSystem()
 
     glPopMatrix();
 
-    // ================= PLANET SECOND =================
+    // ================= SATURN PLANET =================
     glPushMatrix();
     glRotatef(saturnRotate, 0, 1, 0);
     drawSphere(saturnTex, planetSize[5]);
     glPopMatrix();
 
     glPopMatrix();
-    drawPlanet(uranusTex, uranusOrbit, uranusRotate, 26, planetSize[6], uranusTilt, "Uranus",5);
-    drawPlanet(neptuneTex, neptuneOrbit, neptuneRotate, 30, planetSize[7], neptuneTilt, "Neptune",6);
 
+    // ---------------- OUTER PLANETS ----------------
+    drawPlanet(uranusTex, uranusOrbit, uranusRotate, 26, planetSize[6], uranusTilt, "Uranus", 5);
+    drawPlanet(neptuneTex, neptuneOrbit, neptuneRotate, 30, planetSize[7], neptuneTilt, "Neptune", 6);
+
+    // ---------------- OBJECTS ----------------
     drawRocket();
     drawUFO();
 
-    // Selected planet UI
+    // ---------------- UI TEXT ----------------
     glPushMatrix();
     glDisable(GL_LIGHTING);
     glColor3f(1, 1, 0);
@@ -419,22 +498,24 @@ void drawSolarSystem()
     sprintf(info, "Selected: %s", planetNames[selectedPlanet]);
 
     glRasterPos3f(-5, 10, -10);
-    for (int i = 0;info[i];i++)
+    for (int i = 0; info[i]; i++)
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, info[i]);
 
     glEnable(GL_LIGHTING);
     glPopMatrix();
 }
-
 // ---------------- INIT ----------------
 void initSolarSystem()
 {
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
     setupLighting();
     initStars();
+    
 
-    sunTex = loadTexture("assets/textures/sun.bmp");
+    sunTex = loadTexture("assets/skybox/sun3.bmp");
     mercuryTex = loadTexture("assets/textures/mercury.bmp");
     venusTex = loadTexture("assets/textures/venus.bmp");
     earthTex = loadTexture("assets/textures/earth.bmp");
@@ -444,5 +525,5 @@ void initSolarSystem()
     uranusTex = loadTexture("assets/textures/uranus.bmp");
     neptuneTex = loadTexture("assets/textures/neptune.bmp");
 
-    skyTex = loadTexture("assets/skybox/space.bmp");
+    skyTex = loadTexture("assets/skybox/skybox1.bmp");
 }

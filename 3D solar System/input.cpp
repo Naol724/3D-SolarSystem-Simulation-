@@ -1,28 +1,40 @@
-#include <GL/glut.h>
 #include <stdlib.h>
-#include <math.h>
+#include <GL/glut.h>
 #include "input.h"
 #include "utils.h"
 #include "solarsystem.h"
+#include <math.h>
+
+// external variables
+extern float cameraRadius;
+extern float cameraAngle;
+extern int paused;
+extern int focusMode;
+extern int selectedPlanet;
+extern float planetSize[8];
+extern float rocketX, rocketY, rocketZ;
+extern int topView;
 
 void handleKeyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
     case 'w':
-        cameraZ -= 1.0f;
+        cameraRadius -= 2.0f;   // zoom in
+        if (cameraRadius < 5.0f)
+            cameraRadius = 5.0f;
         break;
 
     case 's':
-        cameraZ += 1.0f;
+        cameraRadius += 2.0f;   // zoom out
         break;
 
     case 'a':
-        cameraX -= 1.0f;
+        cameraAngle -= 2.0f;   // rotate left
         break;
 
     case 'd':
-        cameraX += 1.0f;
+        cameraAngle += 2.0f;   // rotate right
         break;
 
     case ' ':
@@ -30,29 +42,45 @@ void handleKeyboard(unsigned char key, int x, int y)
         break;
 
     case 'r':
-        cameraX = 0;
-        cameraY = 10;
-        cameraZ = 30;
-        cameraAngle = 0;
+        cameraAngle = 0.0f;
+        cameraRadius = 30.0f;
         break;
 
-        // ⭐ FIXED: focus planets properly
-    case '1': focusedPlanet = 0; focusMode = 1; break;
-    case '2': focusedPlanet = 1; focusMode = 1; break;
-    case '3': focusedPlanet = 2; focusMode = 1; break;
-    case '4': focusedPlanet = 3; focusMode = 1; break;
-    case '5': focusedPlanet = 4; focusMode = 1; break;
-    case '6': focusedPlanet = 5; focusMode = 1; break;
-    case '7': focusedPlanet = 6; focusMode = 1; break;
-    case '8': focusedPlanet = 7; focusMode = 1; break;
+    case 'f':
+        focusMode = !focusMode;
+        break;
 
-    case '0':
-        focusMode = 0;
+    case 't':
+    case 'T':
+        topView = !topView;
         break;
 
     case 'q':
         exit(0);
         break;
+
+    case 'i': rocketZ -= 1.0f; break;
+    case 'k': rocketZ += 1.0f; break;
+    case 'j': rocketX -= 1.0f; break;
+    case 'l': rocketX += 1.0f; break;
+
+    case 'n':
+        selectedPlanet = (selectedPlanet + 1) % 8;
+        break;
+
+    case 'b':
+        selectedPlanet = (selectedPlanet - 1 + 8) % 8;
+        break;
+
+    case 'u':
+        planetSize[selectedPlanet] += 0.1f;
+        break;
+
+    case 'v':
+        if (planetSize[selectedPlanet] > 0.1f)
+            planetSize[selectedPlanet] -= 0.1f;
+        break;
+    
     }
 
     glutPostRedisplay();

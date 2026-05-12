@@ -6,5 +6,6 @@ void initSolarSystem();
 void updateSolarSystem();
 void drawSolarSystem();
 void drawSaturnRing(float innerRadius, float outerRadius);
+extern float cameraDistance;
 
 #endif

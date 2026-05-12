@@ -7,20 +7,27 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 - **Realistic Planetary Motion**: Each planet orbits the Sun with accurate relative speeds
 - **High-Quality Textures**: Detailed planet textures for all 8 planets and the Sun
 - **Interactive Camera**: Orbit around the solar system with keyboard controls
-- **Focus Mode**: Zoom in on individual planets by pressing number keys (1-8)
+- **Focus Mode**: Zoom in on individual planets
+- **Top View Mode**: Switch to top-down view of the solar system
 - **Dynamic Lighting**: Realistic lighting with the Sun as the light source
+- **Sun Pulsing Effect**: Animated sun with glowing effect
 - **Saturn's Rings**: Special rendering for Saturn's distinctive rings
 - **Additional Objects**: Rocket and UFO animations
 - **Starfield Background**: Thousands of stars in the background
 - **Pause/Resume**: Spacebar to pause/resume planetary motion
+- **Planet Size Control**: Adjust individual planet sizes in real-time
 
 ## Controls
 
-- **W/A/S/D**: Move camera
+- **W/S**: Zoom in/out
+- **A/D**: Rotate camera left/right
 - **Space**: Pause/resume simulation
 - **R**: Reset camera to default position
-- **1-8**: Focus on specific planet (Mercury to Neptune)
-- **0**: Exit focus mode (return to Sun view)
+- **F**: Toggle focus mode on selected planet
+- **T**: Toggle top view mode
+- **N/B**: Cycle through planets (next/previous)
+- **U/V**: Increase/decrease size of selected planet
+- **I/K/J/L**: Move rocket (up/down/left/right)
 - **Q**: Quit application
 
 ## Project Structure
@@ -31,9 +38,10 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 ├── solarsystem.cpp/h     # Solar system rendering and logic
 ├── input.cpp/h          # Keyboard input handling
 ├── utils.cpp/h          # Utility functions (camera, textures)
+├── shader.cpp/h         # Shader system (placeholder)
 ├── assets/
 │   ├── textures/        # Planet texture images (.bmp, .jpg)
-│   └── skybox/          # Space background texture
+│   └── skybox/          # Space background textures
 ├── 3D solar System.vcxproj  # Visual Studio project file
 └── 3D solar System.slnx     # Solution file
 ```
@@ -59,17 +67,27 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 ## Textures
 
 The project includes texture files for:
-- Sun (2 variations)
+- Sun (multiple variations)
 - All 8 planets (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune)
-- Space background for skybox
+- Space background for skybox (multiple variations)
 
 ## Technical Details
 
 - **Rendering**: Uses OpenGL immediate mode with texture mapping
 - **Lighting**: Single light source (Sun) with ambient, diffuse, and specular components
-- **Camera System**: Orbit camera with smooth movement and focus targeting
+- **Camera System**: Orbit camera with smooth movement, focus targeting, and top view
 - **Animation**: Real-time update loop at ~60 FPS
 - **Coordinate System**: Right-handed coordinate system with Y-up
+
+## Recent Updates
+
+- Added top view mode (T key)
+- Added planet size adjustment (U/V keys)
+- Improved sun rendering with pulsing effect
+- Enhanced camera controls with zoom and rotation
+- Added rocket movement controls (I/K/J/L)
+- Improved skybox rendering
+- Better lighting system
 
 ## License
 

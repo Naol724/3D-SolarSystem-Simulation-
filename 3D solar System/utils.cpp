@@ -8,6 +8,7 @@
 float cameraX = 0.0f;
 float cameraY = 5.0f;
 float cameraZ = 30.0f;
+int topView = 0;
 
 // 🔥 PROFESSIONAL ORBIT CAMERA SYSTEM
 float cameraAngle = 0.0f;     // left/right rotation around Sun
@@ -29,14 +30,20 @@ int focusedPlanet = -1;
 // ---------------- CAMERA ORBIT SYSTEM ----------------
 void updateCameraOrbit()
 {
-    float rad = cameraAngle * 3.1416f / 180.0f;
+    if (topView)
+    {
+        cameraX = 0.0f;
+        cameraY = 80.0f;   // 🔥 lower than 80
+        cameraZ = 0.1f;
+    }
+    else
+    {
+        float rad = cameraAngle * 3.1416f / 180.0f;
 
-    // smooth circular orbit around Sun
-    cameraX = cameraRadius * sin(rad);
-    cameraZ = cameraRadius * cos(rad);
-
-    // slight elevation for realism (NOT flat)
-    cameraY = 10.0f + sin(rad * 0.5f) * 2.0f;
+        cameraX = cameraRadius * sin(rad);
+        cameraZ = cameraRadius * cos(rad);
+        cameraY = 10.0f + sin(rad * 0.5f) * 2.0f;
+    }
 }
 
 // ---------------- TARGET SYSTEM ----------------

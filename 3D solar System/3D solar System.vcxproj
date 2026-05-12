@@ -142,12 +142,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="solarsystem.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="solarsystem.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>

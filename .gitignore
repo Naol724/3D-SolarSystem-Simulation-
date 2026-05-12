@@ -42,3 +42,7 @@ report.pdf
 3D solar System/Debug/
 3D solar System/x64/
 3D solar System/computergraph.zip
+
+# Binary/image files that shouldn't be tracked as text
+*.avif
+*.zip

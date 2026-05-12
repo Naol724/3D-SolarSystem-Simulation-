@@ -51,10 +51,18 @@
 2. **Texture loading errors:**
    - Ensure all texture files are in the `assets/` directory
    - Check file paths in the code match your directory structure
+   - The updated code uses:
+     - Sun texture: `assets/skybox/sun3.bmp`
+     - Skybox texture: `assets/skybox/skybox1.bmp`
 
 3. **Build errors in Visual Studio:**
    - Check project properties → Linker → Input → Additional Dependencies
    - Add `opengl32.lib;glu32.lib;glut32.lib`
+
+4. **Shader files are empty:**
+   - The shader system is currently a placeholder
+   - The project works without shaders using fixed-function pipeline
+   - Empty shader files can be safely ignored
 
 ## Project Configuration
 
@@ -68,6 +76,28 @@ The project is configured for:
 
 Texture files should be placed in:
 - `3D solar System/assets/textures/` - Planet textures
-- `3D solar System/assets/skybox/` - Space background
+- `3D solar System/assets/skybox/` - Space background and sun textures
 
 The application loads BMP format textures by default.
+
+## New Features in Updated Version
+
+The updated version includes:
+- Top view camera mode (T key)
+- Planet size adjustment (U/V keys)
+- Improved sun rendering with pulsing animation
+- Enhanced camera controls (W/S for zoom, A/D for rotation)
+- Rocket movement controls (I/K/J/L keys)
+- Better skybox rendering that moves with camera
+- Improved lighting system
+
+## Running the Application
+
+After building, run the application and use:
+- **W/S** to zoom in/out
+- **A/D** to rotate camera
+- **T** to toggle top view
+- **F** to toggle focus mode
+- **N/B** to cycle through planets
+- **U/V** to adjust planet size
+- **Space** to pause/resume animation
