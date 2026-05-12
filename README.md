@@ -17,6 +17,30 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 - **Pause/Resume**: Spacebar to pause/resume planetary motion
 - **Planet Size Control**: Adjust individual planet sizes in real-time
 
+## Screenshots
+
+> **Note**: Add your screenshots to the `screenshots/` folder and update the paths below.
+
+### Main View
+![Main Solar System View](screenshots/main-view.png)
+*Default view of the solar system with all planets orbiting the Sun*
+
+### Top View
+![Top View](screenshots/top-view.png)
+*Top-down view showing planetary orbits (Press T)*
+
+### Focus Mode
+![Planet Focus](screenshots/focus-mode.png)
+*Focused view on a specific planet (Press F to toggle, N/B to cycle)*
+
+### Sun Pulsing Effect
+![Sun Animation](screenshots/sun-pulse.png)
+*Animated sun with glowing pulsing effect*
+
+### Saturn with Rings
+![Saturn Rings](screenshots/saturn-rings.png)
+*Detailed rendering of Saturn with its distinctive rings*
+
 ## Controls
 
 - **W/S**: Zoom in/out
@@ -92,6 +116,23 @@ The project includes texture files for:
 ## License
 
 This project is for educational purposes. Texture images may have their own licensing terms.
+
+## Adding Screenshots
+
+To add your own screenshots to this README:
+
+1. Take screenshots of your running application
+2. Save them as PNG files in a `screenshots/` folder
+3. Update the image paths in the Screenshots section above
+4. Commit and push the changes to GitHub
+
+Example screenshot names you might want to include:
+- `main-view.png` - Default solar system view
+- `top-view.png` - Top-down view (T key)
+- `focus-mode.png` - Planet focus view
+- `sun-pulse.png` - Sun animation close-up
+- `saturn-rings.png` - Saturn with rings detail
+- `rocket-ufo.png` - Rocket and UFO objects
 
 ## Credits
 
