@@ -19,7 +19,7 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 
 ## Screenshots
 
-> **Note**: Add your screenshots to the `screenshots/` folder and update the paths below.
+> **Note**: This is our project screenshots is it realtime simulation
 
 ### Main View
 ![Main Solar System View](screenshots/main-view.png)
