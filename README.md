@@ -33,9 +33,6 @@ A real-time 3D solar system simulation built with OpenGL and C++. This project f
 ![Planet Focus](screenshots/focus-mode.png)
 *Focused view on a specific planet (Press F to toggle, N/B to cycle)*
 
-### Sun Pulsing Effect
-![Sun Animation](screenshots/sun-pulse.png)
-*Animated sun with glowing pulsing effect*
 
 ### Saturn with Rings
 ![Saturn Rings](screenshots/saturn-rings.png)
