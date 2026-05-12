@@ -1,0 +1,44 @@
+# Build directories
+Debug/
+x64/
+build/
+*.obj
+*.pdb
+*.ilk
+*.log
+*.tlog/
+*.idb
+*.lastbuildstate
+*.recipe
+*.Build.CppClean.log
+*.vcxproj.user
+*.vcxproj.filters
+
+# Visual Studio files
+.vs/
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.userosscache
+
+# Compiled binaries
+*.exe
+*.dll
+*.lib
+
+# Temporary files
+*.tmp
+*.temp
+
+# Empty files (based on analysis)
+gouraud.fs
+gouraud.vs
+phong.fs
+phong.vs
+report.pdf
+
+# Git ignore for the project folder
+3D solar System/Debug/
+3D solar System/x64/
+3D solar System/computergraph.zip
